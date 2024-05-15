@@ -38,7 +38,6 @@ import tempfile
 import textwrap
 import traceback
 
-
 # A *check* is a function (of no arguments) that performs a diagnostic,
 # writes log messages, and optionally yields suggestions. Each check
 # runs in isolation; exceptions will be caught and reported.
@@ -241,9 +240,7 @@ def installed_packages():
             appropriate version of TensorBoard directly.)
             """
         )
-        packages_to_uninstall = sorted(
-            frozenset().union(*expect_unique) & packages_set
-        )
+        packages_to_uninstall = sorted(frozenset().union(*expect_unique) & packages_set)
         commands = [
             "pip uninstall %s" % " ".join(packages_to_uninstall),
             "pip install tensorflow  # or `tensorflow-gpu`, or `tf-nightly`, ...",
@@ -292,9 +289,7 @@ def tensorboard_data_server_version():
     except subprocess.CalledProcessError as e:
         logging.info("failed to check binary version: %s", e)
     else:
-        logging.info(
-            "data server binary version: %s", subprocess_output.stdout.strip()
-        )
+        logging.info("data server binary version: %s", subprocess_output.stdout.strip())
 
 
 @check
@@ -334,9 +329,7 @@ def readable_fqdn():
         except subprocess.CalledProcessError:
             binary_hostname = b"<unavailable>"
         is_non_ascii = not all(
-            0x20
-            <= (ord(c) if not isinstance(c, int) else c)
-            <= 0x7E  # Python 2
+            0x20 <= (ord(c) if not isinstance(c, int) else c) <= 0x7E  # Python 2
             for c in binary_hostname
         )
         if is_non_ascii:
@@ -466,17 +459,13 @@ def source_trees_without_genfiles():
                 preamble,
                 "\n".join("  - %s" % s for s in roots),
             )
-        yield Suggestion(
-            "Avoid `tensorboard` packages without genfiles", message
-        )
+        yield Suggestion("Avoid `tensorboard` packages without genfiles", message)
 
 
 # Prefer to include this check last, as its output is long.
 @check
 def full_pip_freeze():
-    logging.info(
-        "pip freeze --all:\n%s", pip(["freeze", "--all"]).decode("utf-8")
-    )
+    logging.info("pip freeze --all:\n%s", pip(["freeze", "--all"]).decode("utf-8"))
 
 
 def set_up_logging():
