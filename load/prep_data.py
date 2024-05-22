@@ -7,7 +7,7 @@ from prefect import flow, task
 from sklearn.preprocessing import StandardScaler
 
 
-@task
+@task(name="read-financial-data-prep_data")
 def read_financial_data(filename: str):
     # Read financial data from CSV file
     with open(filename, "r") as file:
@@ -16,7 +16,7 @@ def read_financial_data(filename: str):
     return data
 
 
-@task
+@task(name="preprocess-labels-financial-data-prep_data")
 def preprocess_labels_financial_data(data):
     # Convert data types and preprocess features
     processed_data = []
@@ -35,19 +35,19 @@ def preprocess_labels_financial_data(data):
     return processed_data
 
 
-@task
+@task(name="dump-pickle-data-prep_data")
 def dump_pickle(obj, filename: str):
     with open(filename, "wb") as f_out:
         return pickle.dump(obj, f_out)
 
 
-@task
+@task(name="read_csv_stock_data-prep_data")
 def read_csv_stock_data(filename: str):
     df = pd.read_csv(filename)
     return df
 
 
-@task
+@task(name="preprocess-stock-data-prep_data")
 def preprocess_stock_data(df: pd.DataFrame):
     # Assuming 'Close' is the target label
     target_label = "Close"
@@ -66,7 +66,7 @@ def preprocess_stock_data(df: pd.DataFrame):
     return X_scaled, y
 
 
-@task
+@task(name="save-preprocessed-data-prep_data")
 def save_preprocessed_data(data, filename):
     # Save preprocessed data to a CSV file
     with open(filename, "w", newline="") as file:
@@ -75,7 +75,7 @@ def save_preprocessed_data(data, filename):
         writer.writerows(data)
 
 
-@flow
+@flow(name="prep-data-flow-prep_data")
 def prep_data_flow(data_path: str, dest_path: str, model_path: str):
     # Read financial data
     financial_data = read_financial_data(data_path)

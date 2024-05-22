@@ -1,0 +1,74 @@
+version: "3.8"
+
+volumes:
+  postgres-data:
+  grafana-data-config-datasources:
+  grafana-data-config-dashboards:
+  grafana-data-dashboards:
+
+networks:
+  back-tier:
+    driver: bridge
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: web_services/Dockerfile
+    env_file:
+      - ../.env
+    volumes:
+      - ../web_services:/app
+      - grafana-data-config-datasources:/app/.grafana/datasources
+      - grafana-data-config-dashboards:/app/.grafana/dashboards
+      - grafana-data-dashboards:/app/dashboards
+    networks:
+      - back-tier
+    ports:
+      - "8000:8000" # Mapping container's port 8000 to host's port 8000
+
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - ../.env
+    ports:
+      - "5432:5432"
+    networks:
+      - back-tier
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - back-tier
+
+  grafana:
+    image: grafana/grafana
+    restart: unless-stopped
+    volumes:
+      - grafana-data-config-datasources:/etc/grafana/provisioning/datasources:ro
+      - grafana-data-config-dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana-data-dashboards:/opt/grafana/dashboards
+    ports:
+      - "3000:3000"
+    networks:
+      - back-tier
+    user: "472"
+
+  monitor:
+    build:
+      context: ..
+      dockerfile: ops_monitoring/Dockerfile
+    env_file:
+      - ../.env
+    volumes:
+      - ../ops_monitoring:/app
+    networks:
+      - back-tier
+    working_dir: /app
+    command: python monitor_app.py

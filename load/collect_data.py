@@ -10,7 +10,7 @@ API_KEY = "1y_afkcFULM8pHgpKKcybbzAhcHRxkA6"
 DATA_PATH = "data"
 
 
-@task
+@task(name="fetch-polygon-data-collect_data")
 def fetch_polygon_data(start_date, end_date):
     client = RESTClient(API_KEY)
     aggs = client.get_aggs("AAPL", 1, "day", start_date, end_date, raw=True)
@@ -18,7 +18,7 @@ def fetch_polygon_data(start_date, end_date):
     return data
 
 
-@task
+@task(name="save-data-collect_data")
 def save_data(data, filename):
     if "results" in data:
         data = data["results"]
@@ -36,14 +36,14 @@ def save_data(data, filename):
         print("No results found in data.")
 
 
-@task
+@task(name="generate-query-params-collect_data")
 def generate_query_params():
     end_date = datetime.datetime.now(datetime.timezone.utc)
     start_date = end_date - datetime.timedelta(days=20 * 30)
     return start_date, end_date
 
 
-@flow
+@flow(name="collect-flow-collect_data")
 def collect_flow():
     os.makedirs(DATA_PATH, exist_ok=True)
     start_date, end_date = generate_query_params()

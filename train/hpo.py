@@ -16,7 +16,7 @@ def load_pickle(filename):
         return pickle.load(f_in)
 
 
-@task
+@task(name="split-data-hpo")
 def split_data(X_train_scaled, y_train, validation_split=0.2):
     num_samples = len(X_train_scaled)
     split_index = int(num_samples * (1 - validation_split))
@@ -25,7 +25,7 @@ def split_data(X_train_scaled, y_train, validation_split=0.2):
     return X_train, y_train, X_val, y_val
 
 
-@task
+@task(name="optimize-hpo")
 def optimize(X_train_scaled, y_train, X_val_scaled, y_val, num_trials):
     def objective(trial):
         units = trial.suggest_int("units", 10, 100, 10)
@@ -41,8 +41,8 @@ def optimize(X_train_scaled, y_train, X_val_scaled, y_val, num_trials):
             history = model.fit(
                 X_train_scaled,
                 y_train,
-                epochs=10,
-                batch_size=32,
+                epochs=100,
+                batch_size=64,
                 validation_data=(X_val_scaled, y_val),
             )
             val_loss = np.min(history.history["val_loss"])
@@ -55,7 +55,7 @@ def optimize(X_train_scaled, y_train, X_val_scaled, y_val, num_trials):
     study.optimize(objective, n_trials=num_trials)
 
 
-@flow
+@flow(name="hpo-flow-hpo")
 def hpo_flow(model_path: str, num_trials: int, experiment_name: str):
     mlflow.set_experiment(experiment_name)
 

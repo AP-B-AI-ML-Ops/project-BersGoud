@@ -16,7 +16,7 @@ def load_pickle(filename):
         return pickle.load(f_in)
 
 
-@task
+@task(name="train-and-log-model-register")
 def train_and_log_model(X_train_scaled, y_train, params):
     # Cast 'units' parameter to an integer
     units = int(params["units"])
@@ -26,10 +26,10 @@ def train_and_log_model(X_train_scaled, y_train, params):
             [LSTM(units, input_shape=(X_train_scaled.shape[1], 1)), Dense(1)]
         )
         model.compile(optimizer="adam", loss="mse")
-        model.fit(X_train_scaled, y_train, epochs=10, batch_size=32)
+        model.fit(X_train_scaled, y_train, epochs=100, batch_size=64)
 
 
-@task
+@task(name="get-experiment-runs-register")
 def get_experiment_runs(top_n, hpo_experiment_name):
     client = MlflowClient()
     experiment = client.get_experiment_by_name(hpo_experiment_name)
@@ -42,7 +42,7 @@ def get_experiment_runs(top_n, hpo_experiment_name):
     return runs
 
 
-@task
+@task(name="select-best-model-register")
 def select_best_model(top_n, experiment_name):
     client = MlflowClient()
     experiment = client.get_experiment_by_name(experiment_name)
@@ -56,7 +56,7 @@ def select_best_model(top_n, experiment_name):
     return best_run
 
 
-@flow
+@flow(name="register-flow-register")
 def register_flow(
     model_path: str, top_n: int, experiment_name: str, hpo_experiment_name: str
 ):

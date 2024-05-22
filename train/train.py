@@ -17,7 +17,7 @@ def load_pickle(filename: str):
         return pickle.load(f_in)
 
 
-@task
+@task(name="start-ml-experiment-train")
 def start_ml_experiment(X_train_scaled, y_train):
     print("Shape of X_train_scaled:", X_train_scaled.shape)
     with mlflow.start_run():
@@ -27,7 +27,7 @@ def start_ml_experiment(X_train_scaled, y_train):
         model.compile(optimizer="adam", loss="mse")
         # Train the model
         history = model.fit(
-            X_train_scaled, y_train, epochs=20, batch_size=32, validation_split=0.2
+            X_train_scaled, y_train, epochs=100, batch_size=64, validation_split=0.2
         )
 
         # Log training metrics to MLflow
@@ -39,7 +39,7 @@ def start_ml_experiment(X_train_scaled, y_train):
         )
 
 
-@flow
+@flow(name="train-flow-train")
 def train_flow(model_path: str):
     mlflow.set_experiment("lstm-train")
     mlflow.tensorflow.autolog()
