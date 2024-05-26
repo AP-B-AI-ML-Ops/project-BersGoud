@@ -7,7 +7,6 @@ from keras.models import Sequential
 from mlflow.entities import ViewType
 from mlflow.tracking import MlflowClient
 from prefect import flow, task
-from tensorflow import keras
 
 
 @task(name="load-pickle-register")

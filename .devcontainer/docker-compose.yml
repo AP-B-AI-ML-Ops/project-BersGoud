@@ -11,21 +11,21 @@ networks:
     driver: bridge
 
 services:
-  app:
-    build:
-      context: ..
-      dockerfile: web_services/Dockerfile
-    env_file:
-      - ../.env
-    volumes:
-      - ../web_services:/app
-      - grafana-data-config-datasources:/app/.grafana/datasources
-      - grafana-data-config-dashboards:/app/.grafana/dashboards
-      - grafana-data-dashboards:/app/dashboards
-    networks:
-      - back-tier
-    ports:
-      - "8000:8000" # Mapping container's port 8000 to host's port 8000
+  # app:
+  #   build:
+  #     context: ..
+  #     dockerfile: web_services/Dockerfile
+  #   env_file:
+  #     - ../.env
+  #   volumes:
+  #     - ../web_services:/app
+  #     - grafana-data-config-datasources:/app/.grafana/datasources
+  #     - grafana-data-config-dashboards:/app/.grafana/dashboards
+  #     - grafana-data-dashboards:/app/dashboards
+  #   networks:
+  #     - back-tier
+  #   ports:
+  #     - "8000:8000" # Mapping container's port 8000 to host's port 8000
 
   db:
     image: postgres:15
@@ -59,16 +59,3 @@ services:
     networks:
       - back-tier
     user: "472"
-
-  monitor:
-    build:
-      context: ..
-      dockerfile: ops_monitoring/Dockerfile
-    env_file:
-      - ../.env
-    volumes:
-      - ../ops_monitoring:/app
-    networks:
-      - back-tier
-    working_dir: /app
-    command: python monitor_app.py

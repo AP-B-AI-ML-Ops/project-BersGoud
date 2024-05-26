@@ -7,7 +7,6 @@ import optuna
 from keras.layers import LSTM, Dense
 from keras.models import Sequential
 from prefect import flow, task
-from tensorflow import keras
 
 
 @task(name="load-pickle-hpo")

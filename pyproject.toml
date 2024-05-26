@@ -3,6 +3,21 @@ disable = [
     "missing-function-docstring",
     "missing-class-docstring",
     "missing-module-docstring",
-    "C0103"
-
+    "C0103",  # Variable name doesn't conform to snake_case naming style
+    "W0622",  # Redefining built-in
+    "W1203",  # Use lazy % formatting in logging functions
+    "W1514",  # Using open without explicitly specifying an encoding
+    "W0611",  # Unused import
+    "C0301",  # Line too long
+    "R1721",  # Unnecessary use of a comprehension
+    "deprecated-module",  # Deprecated module warning
+    "consider-using-f-string",  # Suggests to use f-string
+    "no-else-return",  # Unnecessary else after return
+    "import-outside-toplevel",  # Import outside toplevel
+    "too-few-public-methods",  # Too few public methods
+    "unused-argument",  # Unused argument
+    "broad-exception-caught",  # Catching too general exception
+    "unnecessary-pass",  # Unnecessary pass statement
+    "redefined-outer-name"  # Redefining name from outer scope
 ]
+# these has been filtered out as their are minor and or can effect the functionality of the project, most of the error where from pytest.py

@@ -2,13 +2,9 @@ import os
 import pickle
 
 import mlflow
-import numpy as np
 from keras.layers import LSTM, Dense
 from keras.models import Sequential
 from prefect import flow, task
-from scikeras.wrappers import KerasRegressor
-from sklearn.model_selection import GridSearchCV
-from tensorflow import keras
 
 
 @task(name="load-pickle-train")
