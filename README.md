@@ -62,7 +62,14 @@ Voer de volgende stappen uit om het project op te zetten en te draaien:
 
    ```bash
    cd .devcontainer
-   docker-compose docker-compose.yml up
+   docker-compose up
+   ```
+
+   of
+
+   ```bash
+   cd .devcontainer
+   docker compose up
    ```
 
 3. **Voer het project uit**:
