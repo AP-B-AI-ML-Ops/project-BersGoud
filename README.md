@@ -61,7 +61,8 @@ Voer de volgende stappen uit om het project op te zetten en te draaien:
    Start de Docker containers vanuit de `.devcontainer` map:
 
    ```bash
-   docker-compose -f .devcontainer/docker-compose.yml up
+   cd .devcontainer
+   docker-compose docker-compose.yml up
    ```
 
 3. **Voer het project uit**:
@@ -69,7 +70,7 @@ Voer de volgende stappen uit om het project op te zetten en te draaien:
    Om de pipeline te starten, voer `project_main.py` uit:
 
    ```bash
-   python load_project/project_main.py
+   python project_main.py
    ```
 
 4. **Start de monitor**:
