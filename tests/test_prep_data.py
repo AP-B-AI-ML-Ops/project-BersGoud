@@ -3,18 +3,24 @@ from unittest.mock import mock_open, patch
 
 import pandas as pd
 
-from load_project import prep_data
+from load_project.prep_data import (
+    dump_pickle,
+    preprocess_labels_financial_data,
+    preprocess_stock_data,
+    read_csv_stock_data,
+    read_financial_data,
+    save_preprocessed_data,
+)
 
 
 class TestPrepDataTasks(unittest.TestCase):
-
     @patch(
         "builtins.open",
         new_callable=mock_open,
         read_data="date,v,vw,o,c,h,l,t,n\n2023-01-01,1000,150.0,150.0,155.0,160.0,145.0,1234567890,100",
     )
     def test_read_financial_data(self, mock_open):
-        result = prep_data.read_financial_data.fn(
+        result = read_financial_data.fn(
             "dummy.csv"
         )  # Use .fn to call the function directly
         mock_open.assert_called_once_with("dummy.csv", "r")
@@ -35,7 +41,7 @@ class TestPrepDataTasks(unittest.TestCase):
                 "date": "2023-01-01",
             }
         ]
-        result = prep_data.preprocess_labels_financial_data.fn(
+        result = preprocess_labels_financial_data.fn(
             data
         )  # Use .fn to call the function directly
         self.assertEqual(len(result), 1)
@@ -48,16 +54,14 @@ class TestPrepDataTasks(unittest.TestCase):
         mock_context.__enter__ = lambda s: None
         mock_context.__exit__ = lambda s, t, v, tb: None
         obj = {"key": "value"}
-        prep_data.dump_pickle.fn(
-            obj, "dummy.pkl"
-        )  # Use .fn to call the function directly
+        dump_pickle.fn(obj, "dummy.pkl")  # Use .fn to call the function directly
         mock_open.assert_called_once_with("dummy.pkl", "wb")
         mock_pickle_dump.assert_called_once_with(obj, mock_open())
 
     @patch("pandas.read_csv")
     def test_read_csv_stock_data(self, mock_read_csv):
         mock_read_csv.return_value = "dummy_data"
-        result = prep_data.read_csv_stock_data.fn(
+        result = read_csv_stock_data.fn(
             "dummy.csv"
         )  # Use .fn to call the function directly
         mock_read_csv.assert_called_once_with("dummy.csv")
@@ -76,9 +80,7 @@ class TestPrepDataTasks(unittest.TestCase):
             "Number_of_Trades": [100, 200],
         }
         df = pd.DataFrame(data)
-        result = prep_data.preprocess_stock_data.fn(
-            df
-        )  # Use .fn to call the function directly
+        result = preprocess_stock_data.fn(df)  # Use .fn to call the function directly
         self.assertEqual(len(result), 2)
         self.assertEqual(result[1].iloc[0], 155.0)
 
@@ -98,7 +100,7 @@ class TestPrepDataTasks(unittest.TestCase):
                 "Date": "2023-01-01",
             }
         ]
-        prep_data.save_preprocessed_data.fn(
+        save_preprocessed_data.fn(
             data, "dummy.csv"
         )  # Use .fn to call the function directly
         mock_open.assert_called_once_with("dummy.csv", "w", newline="")

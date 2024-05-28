@@ -11,6 +11,7 @@ disable = [
     "C0301",  # Line too long
     "R1721",  # Unnecessary use of a comprehension
     "deprecated-module",  # Deprecated module warning
+    "R0801",
     "consider-using-f-string",  # Suggests to use f-string
     "no-else-return",  # Unnecessary else after return
     "import-outside-toplevel",  # Import outside toplevel

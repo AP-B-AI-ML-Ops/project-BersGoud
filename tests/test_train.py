@@ -3,18 +3,15 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from train_project import train
+from train_project.train import load_pickle, start_ml_experiment
 
 
 class TestTrainTasks(unittest.TestCase):
-
     @patch("builtins.open", new_callable=unittest.mock.mock_open, read_data="data")
     @patch("pickle.load")
     def test_load_pickle(self, mock_pickle_load, mock_open):
         mock_pickle_load.return_value = {"key": "value"}
-        result = train.load_pickle.fn(
-            "dummy.pkl"
-        )  # Use .fn to call the function directly
+        result = load_pickle.fn("dummy.pkl")  # Use .fn to call the function directly
         mock_open.assert_called_once_with("dummy.pkl", "rb")
         mock_pickle_load.assert_called_once()
         self.assertEqual(result, {"key": "value"})
@@ -31,7 +28,7 @@ class TestTrainTasks(unittest.TestCase):
         )  # Adjusted to 3D array for LSTM input
         y_train = np.array([0.1] * 100)  # Convert to NumPy array
 
-        train.start_ml_experiment.fn(
+        start_ml_experiment.fn(
             X_train_scaled, y_train
         )  # Use .fn to call the function directly
 

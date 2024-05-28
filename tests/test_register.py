@@ -3,11 +3,15 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import numpy as np
 
-from train_project import register
+from train_project.register import (
+    get_experiment_runs,
+    load_pickle,
+    select_best_model,
+    train_and_log_model,
+)
 
 
 class TestRegisterTasks(unittest.TestCase):
-
     @patch("builtins.open", new_callable=mock_open, read_data="data")
     @patch("pickle.load")
     @patch("prefect.client.get_client")
@@ -16,7 +20,7 @@ class TestRegisterTasks(unittest.TestCase):
         mock_get_client.return_value.__aenter__.return_value = mock_client
         mock_pickle_load.return_value = {"key": "value"}
 
-        result = await register.load_pickle("dummy.pkl")
+        result = await load_pickle("dummy.pkl")
 
         mock_open.assert_called_once_with("dummy.pkl", "rb")
         mock_pickle_load.assert_called_once()
@@ -32,7 +36,7 @@ class TestRegisterTasks(unittest.TestCase):
         with patch("mlflow.log_metrics"), patch("mlflow.log_params"), patch(
             "mlflow.keras.log_model"
         ):
-            result = register.train_and_log_model(X_train_scaled, y_train, params)
+            result = train_and_log_model(X_train_scaled, y_train, params)
 
         mock_start_run.assert_called_once()
         mock_fit.assert_called_once()
@@ -44,7 +48,7 @@ class TestRegisterTasks(unittest.TestCase):
         mock_get_experiment_by_name.return_value = MagicMock(experiment_id="1")
         mock_search_runs.return_value = ["run1", "run2"]
 
-        result = register.get_experiment_runs(2, "dummy_experiment")
+        result = get_experiment_runs(2, "dummy_experiment")
 
         mock_get_experiment_by_name.assert_called_once_with("dummy_experiment")
         mock_search_runs.assert_called_once()
@@ -56,7 +60,7 @@ class TestRegisterTasks(unittest.TestCase):
         mock_get_experiment_by_name.return_value = MagicMock(experiment_id="1")
         mock_search_runs.return_value = ["run1"]
 
-        result = register.select_best_model(1, "dummy_experiment")
+        result = select_best_model(1, "dummy_experiment")
 
         mock_get_experiment_by_name.assert_called_once_with("dummy_experiment")
         mock_search_runs.assert_called_once()

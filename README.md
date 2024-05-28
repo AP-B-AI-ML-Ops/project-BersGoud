@@ -105,8 +105,21 @@ Voer de volgende stappen uit om het project op te zetten en te draaien:
    python -m unittest
    ```
 
+   of voer dit uit door middel van Unit testing extension via pytest
+
 7. **Pylint score**:
    Dit project heeft een Pylint score van 10/10.
+
+### Precommit hooks
+
+Er is een precommit hook toegevoegd dat het volgende uitvoert:
+
+- black
+- pylint
+- pytest
+- https://github.com/pre-commit/pre-commit-hooks
+
+#### version v1.0
 
 Bers Goudantov
 2ITAI
